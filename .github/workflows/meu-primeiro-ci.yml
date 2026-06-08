@@ -1,11 +1,29 @@
 name: Pipeline Completo Docker
 on: [push]
 jobs:
-    meu-robo-de-testes:
+    construir-e-publicas:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - name: 1. Baixar o código 
+              uses: actions/checkout@v3
+
+            - name: 2. Preparar Node para Testes
+              uses: actions/setup-node@v3
               with:
                 node-version: 18
-            - run: npm test
+            
+            - name: 3. Rodar Testes de Qualidade
+              run: npm test
+
+            - name: 4. Autenticar no Cofre do Docker Hub
+              uses: docker/login-action@v2
+              with:
+                username: ${{ secrets.DOCKER_USER }}
+                password: ${{ secrets.DOCKER_TOKEN }}
+
+            - name: 5. Build & Push
+              uses: docker/build-push-action@v4
+              with:
+                context: .
+                push: true
+                tags: ${{ secrets.DOCKER_USER }}/primeira-esteira/latest
