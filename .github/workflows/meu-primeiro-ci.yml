@@ -1,4 +1,4 @@
-name: Pipeline de Testes
+name: Pipeline Completo Docker
 on: [push]
 jobs:
     meu-robo-de-testes:
